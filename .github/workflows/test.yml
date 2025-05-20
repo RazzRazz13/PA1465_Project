@@ -51,4 +51,5 @@ jobs:
       - name: Compare pickles
         run: |
           mv pickles/*.pickle ./
+          ls ./
           python compare_pickles.py
