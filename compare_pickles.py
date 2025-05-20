@@ -1,5 +1,6 @@
 import pickle
 import glob
+import hashlib
 
 def compare_pickles():
     """Ladda alla pickle-filer och jämför deras innehåll."""
@@ -8,14 +9,12 @@ def compare_pickles():
         raise ValueError("Inga pickle-filer hittades!")
 
     # Ladda första filen som referens
-    with open(files[0], "rb") as f:
-        reference_data = pickle.load(f)
+    expected_hash = hashlib.sha256(open(files[0], 'rb').read()).hexdigest()
 
     # Jämför med alla andra filer
     for file in files[1:]:
-        with open(file, "rb") as f:
-            data = pickle.load(f)
-        assert data == reference_data, f"Skillnad mellan {files[0]} och {file}"
+        reference_hash = hashlib.sha256(open(file, 'rb').read()).hexdigest()
+        assert expected_hash == reference_hash, f"Skillnad mellan {files[0]} och {file}"
 
     print("Alla pickle-filer ger samma data vid uppackning!")
 
