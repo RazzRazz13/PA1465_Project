@@ -1,28 +1,39 @@
-name: Cross-OS Python Tests
+name: Pickle Compatibility Test
 
-on: [push, pull_request]  # Utlös vid push eller PR
+on: [push, pull_request]
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}  # Kör på flera OS
+  generate_pickles:
+    name: Generate Pickles (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
-    
+        python: ["3.8", "3.9", "3.10", "3.11"]
     steps:
-      - uses: actions/checkout@v4  # Hämta koden
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
+      - name: Test and generate pickle file
+        run: python test_pickle.py
+      - name: Upload pickle file
+        uses: actions/upload-artifact@v3
+        with:
+          name: pickle_py${{ matrix.python }}_${{ matrix.os }}
+          path: pickle_py${{ matrix.python }}_${{ matrix.os }}.pickle
 
-      - name: Install dependencies
+  compare_pickles:
+    name: Compare Pickles
+    needs: generate_pickles  # Vänta på att alla filer skapas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all pickles
+        uses: actions/download-artifact@v3
+        with:
+          path: pickles/
+      - name: Compare pickles
         run: |
-          python -m pip install --upgrade pip
-          pip install pytest
-
-      - name: Run tests
-        run: |
-          python -m pytest test_pickle.py -v
+          mv pickles/*.pickle ./
+          python compare_pickles.py
