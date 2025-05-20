@@ -48,6 +48,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: pickles/
+          merge-multiple: true
       - name: Compare pickles
         run: |
           mv pickles/*.pickle ./
