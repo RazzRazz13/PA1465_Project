@@ -103,7 +103,9 @@ def generate_test():
 
 def generate_pickle():
     """Skapa pickle-fil unik för denna miljö"""
-    filename = f"pickle_py{sys.version_info.major}{sys.version_info.minor}_{sys.platform}.pickle"
+    platforms = {"win32": "windows-latest", "darwin": "macos-latest", "linux": "ubuntu-latest"}
+
+    filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}.pickle"
     with open(filename, "wb") as f:
         pickle.dump(generate_test, f, protocol=pickle.HIGHEST_PROTOCOL)
     print(f"Generated: {filename}")
