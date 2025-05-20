@@ -110,16 +110,16 @@ def generate_pickle():
 
 def main():
     random.seed(9001)
-    # for _ in tqdm(range(1000)):
-    #     test_pickle(generate_dict)
-    #     test_pickle(generate_string)
-    #     test_pickle(generate_set)
-    #     test_pickle(generate_bytearray)
-    #     test_pickle(generate_bytes)
-    #     test_pickle(generate_complex)
-    #     test_pickle(generate_float)
-    #     test_pickle(generate_integer)
-    #     test_pickle(generate_tuple)
+    for _ in tqdm(range(1000)):
+        test_pickle(generate_dict)
+        test_pickle(generate_string)
+        test_pickle(generate_set)
+        test_pickle(generate_bytearray)
+        test_pickle(generate_bytes)
+        test_pickle(generate_complex)
+        test_pickle(generate_float)
+        test_pickle(generate_integer)
+        test_pickle(generate_tuple)
 
     generate_pickle()
     

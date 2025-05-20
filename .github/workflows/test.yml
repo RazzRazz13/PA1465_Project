@@ -15,6 +15,8 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: pip install tqdm
       - name: Test and generate pickle file
         run: python test_pickle.py
       - name: Upload pickle file
@@ -25,7 +27,7 @@ jobs:
 
   compare_pickles:
     name: Compare Pickles
-    needs: generate_pickles  # Vänta på att alla filer skapas
+    needs: generate_pickles
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
