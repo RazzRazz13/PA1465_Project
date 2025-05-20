@@ -27,7 +27,7 @@ jobs:
       - name: Test and generate pickle file
         run: python test_pickle.py
       - name: Upload pickle file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: pickle_py${{ matrix.python }}_${{ matrix.os }}
           path: pickle_py${{ matrix.python }}_${{ matrix.os }}.pickle
