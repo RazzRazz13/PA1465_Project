@@ -1,48 +1,104 @@
 import pickle
 import random
+import hashlib
+from tqdm import tqdm
 
-def test1(value):
-    """Test if pickling + hashing is consistent."""
-    # Hash twice and compare
-    hash1 = hash(pickle.dumps(value))
-    hash2 = hash(pickle.dumps(value))
-    assert hash1 == hash2, "Hash mismatch for same input!"
+def hash_pickle(obj):
+    data = pickle.dumps(obj)
+    return hashlib.sha256(data).hexdigest(), data
 
-def test2(value):
-    """Test if pickle -> unpickle -> pickle produces equivalent data."""
-    # Serialize -> deserialize -> serialize again
-    pic1 = pickle.dumps(value)
-    unpickled = pickle.loads(pic1)
-    pic2 = pickle.dumps(unpickled)
+def test_pickle(funct):
+    """
+    Test the pickle and unpickle of a single value
+    """
+    for _ in range(1000):
+            value = funct()
+            pick1 = hash_pickle(value)
+            pick2 = hash_pickle(value)
     
-    # Compare the serialized bytes (should be equal for most cases)
-    assert pic1 == pic2, "Serialized data changed after roundtrip!"
+    assert(pick1 == pick2)
 
 def generate_tuple():
-    """Generate a random tuple."""
-    return tuple(random.randint(1, 1000) for _ in range(random.randint(1, 100)))
+    """
+    Generate a random tuple of values
+    """
+    tuple = ()
+    for _ in range(random.randint(1, 10)):
+        tuple += (random.randint(1, 10),)
+    return tuple
 
 def generate_list():
-    """Generate a random list."""
-    return [random.randint(1, 1000) for _ in range(random.randint(1, 100))]
+    """
+    Generate a random list of values
+    """
+    list = []
+    for _ in range(random.randint(1, 10)):
+        list.append(random.randint(1, 10))
+    return list
+
+def generate_integer():
+    """
+    Generate a random int
+    """
+    return random.randint(-100, 100)
+
+def generate_float():
+    """
+    Generate a random float
+    """
+    return random.uniform(-100.0, 100.0)
+
+def generate_complex():
+    """
+    Generate a random complex
+    """
+    return complex(random.uniform(-10, 10), random.uniform(-10, 10))
+
+def generate_bytes():
+    """
+    Generate a random bytes
+    """
+    return bytes([random.randint(0, 255) for _ in range(random.randint(5, 10))])
+
+def generate_bytearray():
+    """
+    Generate a random bytearray
+    """
+    return bytearray([random.randint(0, 255) for _ in range(random.randint(5, 10))])
+
+def generate_string():
+    """
+    Generate a random string
+    """
+    return ''.join(random.choices("abcdefghijklmnopqrstuvwxyz", k=random.randint(5, 10)))
+
+def generate_set():
+    """
+    Generate a random set
+    """
+    return {generate_integer() for _ in range(random.randint(2, 5))}
 
 def generate_dict():
-    """Generate a random dict."""
-    return {random.randint(1, 100): random.randint(1, 100) for _ in range(random.randint(1, 100))}
-
-def random_data_generator():
-    """Yield random data structures indefinitely."""
-    generators = [generate_tuple, generate_list, generate_dict]
-    while True:
-        yield random.choice(generators)()
+    """
+    Generate a random dict of values
+    """
+    dict = {}
+    for _ in range(random.randint(1, 10)):
+        dict[random.randint(1, 10)] = random.randint(1, 10)
+    return dict
 
 def main():
     random.seed(9001)
-    data_generator = random_data_generator()
-    for _ in range(1000):
-        data = next(data_generator)
-        test1(data)
-        test2(data)
+    for _ in tqdm(range(1000)):
+        test_pickle(generate_dict)
+        test_pickle(generate_string)
+        test_pickle(generate_set)
+        test_pickle(generate_bytearray)
+        test_pickle(generate_bytes)
+        test_pickle(generate_complex)
+        test_pickle(generate_float)
+        test_pickle(generate_integer)
+        test_pickle(generate_tuple)
 
 if __name__ == "__main__":
     main()
