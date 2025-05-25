@@ -51,6 +51,6 @@ jobs:
           merge-multiple: true
       - name: Compare pickles
         run: |
-          mv pickles/*.pickle ./
+          mv pickles/*.txt ./
           ls ./
           python compare_pickles.py
