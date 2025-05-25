@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 def hash_pickle(obj):
     data = pickle.dumps(obj)
-    return hashlib.sha256(data).hexdigest(), data
+    return hashlib.sha256(data).hexdigest()
 
 def test_pickle(funct):
     """
@@ -108,47 +108,49 @@ def generate_nested():
     }
 
 def generate_test():
-    data = [generate_tuple, 
-            generate_list, 
-            generate_integer, 
-            generate_float, 
-            generate_complex, 
-            generate_bytes, 
-            generate_bytearray, 
-            generate_string, 
-            generate_set, 
-            generate_dict,
-            generate_none,
-            generate_bool,
-            generate_nested,
-            generate_close_float]
-    return {f"{func.__name__}": func() for func in data}
+    data = [hash_pickle(generate_tuple()), 
+            hash_pickle(generate_list()), 
+            hash_pickle(generate_integer()), 
+            hash_pickle(generate_float()), 
+            hash_pickle(generate_complex()), 
+            hash_pickle(generate_bytes()), 
+            hash_pickle(generate_bytearray()),
+            hash_pickle(generate_string()), 
+            hash_pickle(generate_set()),
+            hash_pickle(generate_dict()),
+            hash_pickle(generate_none()),
+            hash_pickle(generate_bool()),
+            hash_pickle(generate_nested()),
+            hash_pickle(generate_close_float())]
+    return data
 
 
 def generate_pickle():
     """Skapa pickle-fil unik för denna miljö"""
     platforms = {"win32": "windows-latest", "darwin": "macos-latest", "linux": "ubuntu-latest"}
 
-    filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}.pickle"
-    with open(filename, "wb") as f:
-        pickle.dump(generate_test(), f, protocol=pickle.HIGHEST_PROTOCOL)
+    filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}.txt"
+    with open(filename, "w") as f:
+        data = generate_test()
+        for item in data:
+            f.write(f"{item}\n")
     print(f"Generated: {filename}")
 
 def main():
     random.seed(9001)
-    for _ in tqdm(range(1000)):
-        test_pickle(generate_dict)
-        test_pickle(generate_string)
-        test_pickle(generate_set)
-        test_pickle(generate_bytearray)
-        test_pickle(generate_bytes)
-        test_pickle(generate_complex)
-        test_pickle(generate_float)
-        test_pickle(generate_integer)
-        test_pickle(generate_tuple)
-        test_pickle(generate_close_float)
-        test_pickle(generate_bool)
-        test_pickle(generate_none)
+    # for _ in tqdm(range(1000)):
+    #     test_pickle(generate_dict)
+    #     test_pickle(generate_string)
+    #     test_pickle(generate_set)
+    #     test_pickle(generate_bytearray)
+    #     test_pickle(generate_bytes)
+    #     test_pickle(generate_complex)
+    #     test_pickle(generate_float)
+    #     test_pickle(generate_integer)
+    #     test_pickle(generate_tuple)
+    #     test_pickle(generate_close_float)
+    #     test_pickle(generate_bool)
+    #     test_pickle(generate_none)
 
 
     generate_pickle()
