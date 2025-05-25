@@ -35,8 +35,8 @@ jobs:
       - name: Upload pickle file
         uses: actions/upload-artifact@v4
         with:
-          name: pickle_py${{ matrix.python }}_${{ matrix.os }}.pickle
-          path: pickle_py${{ matrix.python }}_${{ matrix.os }}.pickle
+          name: pickle_py${{ matrix.python }}_${{ matrix.os }}.txt
+          path: pickle_py${{ matrix.python }}_${{ matrix.os }}.txt
 
   compare_pickles:
     name: Compare Pickles
