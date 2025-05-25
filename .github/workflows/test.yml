@@ -35,8 +35,8 @@ jobs:
       - name: Upload pickle file
         uses: actions/upload-artifact@v4
         with:
-          name: pickle_py${{ matrix.python }}_${{ matrix.os }}.pickle
-          path: pickle_py${{ matrix.python }}_${{ matrix.os }}.pickle
+          name: pickle_py${{ matrix.python }}_${{ matrix.os }}.txt
+          path: pickle_py${{ matrix.python }}_${{ matrix.os }}.txt
 
   compare_pickles:
     name: Compare Pickles
@@ -51,6 +51,6 @@ jobs:
           merge-multiple: true
       - name: Compare pickles
         run: |
-          mv pickles/*.pickle ./
+          mv pickles/*.txt ./
           ls ./
           python compare_pickles.py
