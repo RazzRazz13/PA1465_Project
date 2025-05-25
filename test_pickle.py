@@ -200,7 +200,7 @@ def generate_pickle():
     """Skapa pickle-fil unik för denna miljö"""
     platforms = {"win32": "windows-latest", "darwin": "macos-latest", "linux": "ubuntu-latest"}
 
-    filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}s.txt"
+    filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}.txt"
     with open(filename, "w") as f:
         data = generate_test()
         for item in data:
