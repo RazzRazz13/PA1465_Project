@@ -8,55 +8,35 @@ def hash_pickle(obj):
     data = pickle.dumps(obj)
     return hashlib.sha256(data).hexdigest()
 
-def test_pickle(funct):
-    """
-    Test the pickle of a single value
-    """
-    for _ in range(1000):
-            value = funct()
-            pick1 = hash_pickle(value)
-            pick2 = hash_pickle(value)
-            assert(pick1 == pick2)
-
-def test_pickle2(funct):
-    """
-    Test the pickle of a single value
-    """
-    for _ in range(1000):
-            value = funct(50)
-            pick1 = hash_pickle(value)
-            pick2 = hash_pickle(value)
-            assert(pick1 == pick2)
-
 def generate_tuple():
     """
     Generate a random tuple of values
     """
-    tuple = ()
+    data = ()
     for _ in range(random.randint(1, 10)):
-        tuple += (random.randint(1, 10),)
-    return tuple
+        data += (random.randint(1, 10),)
+    return data
 
 def generate_list():
     """
     Generate a random list of values
     """
-    list = []
+    data = []
     for _ in range(random.randint(1, 10)):
-        list.append(random.randint(1, 10))
-    return list
+        data.append(random.randint(1, 10))
+    return data
 
 def generate_integer():
     """
     Generate a random int
     """
-    return random.randint(-100, 100)
+    return random.randint(-10000, 10000)
 
 def generate_float():
     """
     Generate a random float
     """
-    return random.uniform(-100.0, 100.0)
+    return random.uniform(-10000.0, 10000.0)
 
 def generate_close_float():
     """
@@ -86,7 +66,7 @@ def generate_string():
     """
     Generate a random string
     """
-    return ''.join(random.choices("abcdefghijklmnopqrstuvwxyz", k=random.randint(5, 10)))
+    return ''.join(random.choices("abcdefghijklmnopqrstuvwxyzåäö", k=random.randint(5, 10)))
 
 def generate_set():
     """
@@ -98,10 +78,10 @@ def generate_dict():
     """
     Generate a random dict of values
     """
-    dict = {}
+    data = {}
     for _ in range(random.randint(1, 10)):
-        dict[random.randint(1, 10)] = random.randint(1, 10)
-    return dict
+        data[random.randint(1, 10)] = random.randint(1, 10)
+    return data
 
 def generate_none():
     return None
@@ -109,39 +89,81 @@ def generate_none():
 def generate_bool():
     return random.choice([True, False])
 
+def generate_function():
+    return generate_bool
 
-def create_random_nesteddict(length):
+
+def generate_nested_dict(length):
 
     if length <= 1:
         function_choose = [generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
     else:
-        function_choose = [create_random_nesteddict, generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
+        function_choose = [generate_nested_dict, generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
 
     value = {}
     for _ in range(random.randint(1, length)):
         func = random.choice(function_choose)
-        if (func == create_random_nesteddict):
+        if (func == generate_nested_dict):
             value[str(random.randint(1, length))] = func(length // 2)
         else:
             value[str(random.randint(1, length))] = func()
     
     return value
 
-def create_random_nestedlist(length):
+def generate_nested_list(length):
     if length <= 1:
         function_choose = [generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
     else:
-        function_choose = [create_random_nestedlist, generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
+        function_choose = [generate_nested_list, generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
 
     value = []
     for _ in range(random.randint(1, length)):
         func = random.choice(function_choose)
-        if func == create_random_nestedlist:
+        if func == generate_nested_list:
             value.append(func(length // 2))
         else:
             value.append(func())
     
     return value
+
+def generate_notimplemented():
+    return NotImplemented
+
+def generate_ellipsis():
+    return Ellipsis 
+
+def generate___debug__():
+    return __debug__
+
+def generate_complex():
+    return complex(generate_float(), generate_float())
+
+class Dummy:
+    def __init__(self, name="Dummy"):
+        self.name = name
+        self.lamdba = lambda x : x
+
+    def greet(self):
+        return self.name
+
+    def __repr__(self):
+        return self.lamdba
+
+def generate_class():
+    return Dummy
+
+def generate_frozenset():
+    return frozenset({generate_integer() for _ in range(10)})
+
+def generate_selfrecursive_dict():
+    data = {}
+    data["self"] = data
+    return data
+
+def generate_selfrecursive_list():
+    data = []
+    data.append(data)
+    return data
 
 def generate_test():
     data = []
@@ -158,10 +180,19 @@ def generate_test():
         data.append(hash_pickle(generate_dict()))
         data.append(hash_pickle(generate_none()))
         data.append(hash_pickle(generate_bool()))
-        data.append(hash_pickle(generate_none()))
-        data.append(hash_pickle(create_random_nesteddict(100)))
-        data.append(hash_pickle(create_random_nestedlist(100)))
+        data.append(hash_pickle(generate_nested_dict(100)))
+        data.append(hash_pickle(generate_nested_list(100)))
         data.append(hash_pickle(generate_close_float()))
+        data.append(hash_pickle(generate_function()))
+        data.append(hash_pickle(generate_notimplemented()))
+        data.append(hash_pickle(generate_ellipsis()))
+        data.append(hash_pickle(generate___debug__()))
+        data.append(hash_pickle(generate_complex()))
+        data.append(hash_pickle(generate_class()))
+        data.append(hash_pickle(generate_frozenset()))
+        data.append(hash_pickle(generate_selfrecursive_dict()))
+        data.append(hash_pickle(generate_selfrecursive_list()))
+
     return data
 
 
@@ -169,7 +200,7 @@ def generate_pickle():
     """Skapa pickle-fil unik för denna miljö"""
     platforms = {"win32": "windows-latest", "darwin": "macos-latest", "linux": "ubuntu-latest"}
 
-    filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}.txt"
+    filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}s.txt"
     with open(filename, "w") as f:
         data = generate_test()
         for item in data:
@@ -178,23 +209,6 @@ def generate_pickle():
 
 def main():
     random.seed(9001)
-    # for _ in tqdm(range(10)):
-    #     test_pickle(generate_dict)
-    #     test_pickle(generate_string)
-    #     test_pickle(generate_set)
-    #     test_pickle(generate_bytearray)
-    #     test_pickle(generate_bytes)
-    #     test_pickle(generate_complex)
-    #     test_pickle(generate_float)
-    #     test_pickle(generate_integer)
-    #     test_pickle(generate_tuple)
-    #     test_pickle(generate_close_float)
-    #     test_pickle(generate_bool)
-    #     test_pickle(generate_none)
-    #     test_pickle2(create_random_nesteddict)
-    #     test_pickle2(create_random_nestedlist)
-
-
     generate_pickle()
     
 
