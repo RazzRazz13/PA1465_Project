@@ -88,6 +88,20 @@ def generate_dict():
         dict[random.randint(1, 10)] = random.randint(1, 10)
     return dict
 
+def generate_none():
+    return None
+
+def generate_bool():
+    return random.choice([True, False])
+
+def generate_nested():
+    return {
+        "ints": [generate_integer() for _ in range(3)],
+        "dict": generate_dict(),
+        "tuple": (generate_string(), generate_float()),
+        "set": generate_set()
+    }
+
 def generate_test():
     data = [generate_tuple, 
             generate_list, 
@@ -98,8 +112,12 @@ def generate_test():
             generate_bytearray, 
             generate_string, 
             generate_set, 
-            generate_dict]
+            generate_dict,
+            generate_none,
+            generate_bool,
+            generate_nested]
     return {f"{func.__name__}": func() for func in data}
+
 
 def generate_pickle():
     """Skapa pickle-fil unik för denna miljö"""
