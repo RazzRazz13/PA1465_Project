@@ -44,12 +44,6 @@ def generate_close_float():
     """
     return random.uniform(-1e-12, 1e-12)
 
-def generate_complex():
-    """
-    Generate a random complex
-    """
-    return complex(random.uniform(-10, 10), random.uniform(-10, 10))
-
 def generate_bytes():
     """
     Generate a random bytes
@@ -136,6 +130,9 @@ def generate___debug__():
     return __debug__
 
 def generate_complex():
+    """
+    Generate a random complex
+    """
     return complex(generate_float(), generate_float())
 
 class Dummy:
@@ -165,6 +162,33 @@ def generate_selfrecursive_list():
     data.append(data)
     return data
 
+def generate_empty_list():
+    return []
+
+def generate_empty_dict():
+    return {}
+
+def generate_empty_tuple():
+    return ()
+
+def generate_empty_set():
+    return set()
+
+def generate_empty_bytes():
+    return b""
+
+def generate_mixed_tuple():
+    return (generate_integer(), generate_string(), None, generate_bool())
+
+def generate_inf():
+    return float('inf')
+
+def generate_neg_inf():
+    return float('-inf')
+
+def generate_nan():
+    return float('nan')
+
 def generate_test():
     data = []
     for _ in tqdm(range(1000)):
@@ -192,6 +216,16 @@ def generate_test():
         data.append(hash_pickle(generate_frozenset()))
         data.append(hash_pickle(generate_selfrecursive_dict()))
         data.append(hash_pickle(generate_selfrecursive_list()))
+        data.append(hash_pickle(generate_empty_bytes()))
+        data.append(hash_pickle(generate_empty_set()))
+        data.append(hash_pickle(generate_empty_tuple()))
+        data.append(hash_pickle(generate_empty_dict()))
+        data.append(hash_pickle(generate_empty_list()))
+        data.append(hash_pickle(generate_mixed_tuple()))
+        data.append(hash_pickle(generate_inf()))
+        data.append(hash_pickle(generate_neg_inf()))
+        data.append(hash_pickle(generate_nan()))
+        
 
     return data
 
