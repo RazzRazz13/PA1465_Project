@@ -12,6 +12,8 @@ def compare_pickles():
 
     # Jämför med alla andra filer
     for file in files[1:]:
+        print(file)
+        print(1)
         reference_hash = hashlib.sha256(open(file, 'rb').read()).hexdigest()
         assert expected_hash == reference_hash, f"Skillnad mellan {files[0]} och {file}"
 
