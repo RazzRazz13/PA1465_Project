@@ -18,6 +18,16 @@ def test_pickle(funct):
             pick2 = hash_pickle(value)
             assert(pick1 == pick2)
 
+def test_pickle2(funct):
+    """
+    Test the pickle of a single value
+    """
+    for _ in range(1000):
+            value = funct(50)
+            pick1 = hash_pickle(value)
+            pick2 = hash_pickle(value)
+            assert(pick1 == pick2)
+
 def generate_tuple():
     """
     Generate a random tuple of values
@@ -99,29 +109,59 @@ def generate_none():
 def generate_bool():
     return random.choice([True, False])
 
-def generate_nested():
-    return {
-        "ints": [generate_integer() for _ in range(3)],
-        "dict": generate_dict(),
-        "tuple": (generate_string(), generate_float()),
-        "set": generate_set()
-    }
+
+def create_random_nesteddict(length):
+
+    if length <= 1:
+        function_choose = [generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
+    else:
+        function_choose = [create_random_nesteddict, generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
+
+    value = {}
+    for _ in range(random.randint(1, length)):
+        func = random.choice(function_choose)
+        if (func == create_random_nesteddict):
+            value[str(random.randint(1, length))] = func(length // 2)
+        else:
+            value[str(random.randint(1, length))] = func()
+    
+    return value
+
+def create_random_nestedlist(length):
+    if length <= 1:
+        function_choose = [generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
+    else:
+        function_choose = [create_random_nestedlist, generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
+
+    value = []
+    for _ in range(random.randint(1, length)):
+        func = random.choice(function_choose)
+        if func == create_random_nestedlist:
+            value.append(func(length // 2))
+        else:
+            value.append(func())
+    
+    return value
 
 def generate_test():
-    data = [hash_pickle(generate_tuple()), 
-            hash_pickle(generate_list()), 
-            hash_pickle(generate_integer()), 
-            hash_pickle(generate_float()), 
-            hash_pickle(generate_complex()), 
-            hash_pickle(generate_bytes()), 
-            hash_pickle(generate_bytearray()),
-            hash_pickle(generate_string()), 
-            hash_pickle(generate_set()),
-            hash_pickle(generate_dict()),
-            hash_pickle(generate_none()),
-            hash_pickle(generate_bool()),
-            hash_pickle(generate_nested()),
-            hash_pickle(generate_close_float())]
+    data = []
+    for _ in tqdm(range(1000)):
+        data.append(hash_pickle(generate_tuple()))
+        data.append(hash_pickle(generate_list()))
+        data.append(hash_pickle(generate_integer()))
+        data.append(hash_pickle(generate_float()))
+        data.append(hash_pickle(generate_complex()))
+        data.append(hash_pickle(generate_bytes()))
+        data.append(hash_pickle(generate_bytearray()))
+        data.append(hash_pickle(generate_string()))
+        data.append(hash_pickle(generate_set()))
+        data.append(hash_pickle(generate_dict()))
+        data.append(hash_pickle(generate_none()))
+        data.append(hash_pickle(generate_bool()))
+        data.append(hash_pickle(generate_none()))
+        data.append(hash_pickle(create_random_nesteddict(100)))
+        data.append(hash_pickle(create_random_nestedlist(100)))
+        data.append(hash_pickle(generate_close_float()))
     return data
 
 
@@ -138,7 +178,7 @@ def generate_pickle():
 
 def main():
     random.seed(9001)
-    # for _ in tqdm(range(1000)):
+    # for _ in tqdm(range(10)):
     #     test_pickle(generate_dict)
     #     test_pickle(generate_string)
     #     test_pickle(generate_set)
@@ -151,6 +191,8 @@ def main():
     #     test_pickle(generate_close_float)
     #     test_pickle(generate_bool)
     #     test_pickle(generate_none)
+    #     test_pickle2(create_random_nesteddict)
+    #     test_pickle2(create_random_nestedlist)
 
 
     generate_pickle()

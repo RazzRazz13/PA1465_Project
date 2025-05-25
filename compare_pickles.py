@@ -1,5 +1,4 @@
 import glob
-import hashlib
 
 def compare_pickles():
     """Ladda alla pickle-filer och jämför deras innehåll."""
@@ -17,6 +16,7 @@ def compare_pickles():
             f2_lines = f2.split('\n')
             for f2_n, f2_line in enumerate(f2_lines):
                 if f1_n == f2_n:
+                    print(f2_line, f1_line )
                     assert f1_line == f2_line, f"Skillnad mellan {files[0]} och {file}"
 
     print("Alla pickle-filer ger samma data vid uppackning!")
