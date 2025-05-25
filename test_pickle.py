@@ -16,8 +16,7 @@ def test_pickle(funct):
             value = funct()
             pick1 = hash_pickle(value)
             pick2 = hash_pickle(value)
-    
-    assert(pick1 == pick2)
+            assert(pick1 == pick2)
 
 def generate_tuple():
     """
@@ -48,6 +47,12 @@ def generate_float():
     Generate a random float
     """
     return random.uniform(-100.0, 100.0)
+
+def generate_close_float():
+    """
+    Generate a random float
+    """
+    return random.uniform(-1e-12, 1e-12)
 
 def generate_complex():
     """
@@ -115,7 +120,8 @@ def generate_test():
             generate_dict,
             generate_none,
             generate_bool,
-            generate_nested]
+            generate_nested,
+            generate_close_float]
     return {f"{func.__name__}": func() for func in data}
 
 
@@ -125,7 +131,7 @@ def generate_pickle():
 
     filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}.pickle"
     with open(filename, "wb") as f:
-        pickle.dump(generate_test, f, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(generate_test(), f, protocol=pickle.HIGHEST_PROTOCOL)
     print(f"Generated: {filename}")
 
 def main():
@@ -140,6 +146,10 @@ def main():
         test_pickle(generate_float)
         test_pickle(generate_integer)
         test_pickle(generate_tuple)
+        test_pickle(generate_close_float)
+        test_pickle(generate_bool)
+        test_pickle(generate_none)
+
 
     generate_pickle()
     
