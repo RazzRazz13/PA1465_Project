@@ -5,6 +5,9 @@ import sys
 from tqdm import tqdm
 
 def hash_pickle(obj):
+    """
+    Pickles and hash the input object
+    """
     data = pickle.dumps(obj)
     return hashlib.sha256(data).hexdigest()
 
@@ -78,17 +81,28 @@ def generate_dict():
     return data
 
 def generate_none():
+    """
+    Generate a none
+    """
     return None
 
 def generate_bool():
+    """
+    Generate a bool
+    """
     return random.choice([True, False])
 
 def generate_function():
+    """
+    Generate a function
+    """
     return generate_bool
 
 
 def generate_nested_dict(length):
-
+    """
+    Generate a nested dict
+    """
     if length <= 1:
         function_choose = [generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
     else:
@@ -105,6 +119,9 @@ def generate_nested_dict(length):
     return value
 
 def generate_nested_list(length):
+    """
+    Generate a nested list
+    """
     if length <= 1:
         function_choose = [generate_list, generate_complex, generate_integer, generate_bytes, generate_float, generate_bytearray, generate_string, generate_set]
     else:
@@ -121,12 +138,21 @@ def generate_nested_list(length):
     return value
 
 def generate_notimplemented():
+    """
+    Generate a notimplemented
+    """
     return NotImplemented
 
 def generate_ellipsis():
+    """
+    Generate a ellipsis
+    """
     return Ellipsis 
 
 def generate___debug__():
+    """
+    Generate a __debug__
+    """
     return __debug__
 
 def generate_complex():
@@ -147,49 +173,91 @@ class Dummy:
         return self.lamdba
 
 def generate_class():
+    """
+    Generate a class object
+    """
     return Dummy
 
 def generate_frozenset():
+    """
+    Generate a frozenset
+    """
     return frozenset({generate_integer() for _ in range(10)})
 
 def generate_selfrecursive_dict():
+    """
+    Generate a selfrecursive dict
+    """
     data = {}
     data["self"] = data
     return data
 
 def generate_selfrecursive_list():
+    """
+    Generate a selfrecursive list
+    """
     data = []
     data.append(data)
     return data
 
 def generate_empty_list():
+    """
+    Generate a empty list
+    """
     return []
 
 def generate_empty_dict():
+    """
+    Generate a empty dict
+    """
     return {}
 
 def generate_empty_tuple():
+    """
+    Generate a empty tuple
+    """
     return ()
 
 def generate_empty_set():
+    """
+    Generate a empty set
+    """
     return set()
 
 def generate_empty_bytes():
+    """
+    Generate empty bytes
+    """
     return b""
 
 def generate_mixed_tuple():
+    """
+    Generate a mixed tuple
+    """
     return (generate_integer(), generate_string(), None, generate_bool())
 
 def generate_inf():
+    """
+    Generate inf
+    """
     return float('inf')
 
 def generate_neg_inf():
+    """
+    Generate -inf
+    """
     return float('-inf')
 
 def generate_nan():
+    """
+    Generate a nan value
+    """
     return float('nan')
 
 def generate_test():
+    """
+    Generate list of testcases
+    """
     data = []
     for _ in tqdm(range(1000)):
         data.append(hash_pickle(generate_tuple()))
@@ -225,13 +293,11 @@ def generate_test():
         data.append(hash_pickle(generate_inf()))
         data.append(hash_pickle(generate_neg_inf()))
         data.append(hash_pickle(generate_nan()))
-        
-
     return data
 
 
 def generate_pickle():
-    """Skapa pickle-fil unik för denna miljö"""
+    """Create a pickle file unique of this environment"""
     platforms = {"win32": "windows-latest", "darwin": "macos-latest", "linux": "ubuntu-latest"}
 
     filename = f"pickle_py{sys.version_info.major}.{sys.version_info.minor}_{platforms[sys.platform]}.txt"
